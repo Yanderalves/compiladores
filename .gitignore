@@ -1,0 +1,67 @@
+# Arquivos e diretórios comuns em Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configurações de ambiente virtual
+env/
+venv/
+ENV/
+.venv/
+.ENV/
+
+# Arquivos de log
+*.log
+*.out
+*.err
+
+# Dados temporários e arquivos de cache
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+*.orig
+*.save
+*.DS_Store
+*.coverage
+.coverage.*
+.cache/
+*.egg-info/
+*.eggs/
+
+# Arquivos de configuração do sistema
+.idea/
+.vscode/
+*.iml
+
+# Configurações de pacotes
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testes locais
+.tox/
+.nox/
+*.pytest_cache/
+coverage.xml
+*.coverage
+htmlcov/
+
+# Arquivos de build e distribuição
+build/
+dist/
+*.egg
+*.egg-info/
+.eggs/
+*.wheel
+
+# Arquivos específicos do Docker
+*.env
+
+# Notebooks Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Configuração para mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
