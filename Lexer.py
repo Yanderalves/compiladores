@@ -65,6 +65,9 @@ class Lexer:
             elif self.current == Consts.COMMA:
                 tokens.append(Token(Consts.COMMA))
                 self.__advance()
+            elif self.current == Consts.FLOAT:
+                tokens.append(Token(Consts.FLOAT))
+                self.__advance()
             else:
                 char = self.current
                 self.__advance()

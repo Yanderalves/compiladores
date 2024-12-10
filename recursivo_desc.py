@@ -11,8 +11,8 @@ class RecDescendente:
     def start(self):
         self.nextToken()
         acertos, erro = self.input_list()
-        if self.currentTok().type != Consts.EOF:
-            return None, f"Erro: EOF esperado, mas '{self.currentTok().value}' encontrado"
+        if self.currentToken().type != Consts.EOF:
+            return None, f"Erro: EOF esperado, mas '{self.currentToken().value}' encontrado"
         return acertos, erro
 
     def nextToken(self):
@@ -22,7 +22,7 @@ class RecDescendente:
         return self.current
 
     def input_list(self):
-        if self.currentTok().type in [Consts.KEY, Consts.INT]:
+        if self.currentToken().type in [Consts.KEY, Consts.INT, Consts.FLOAT]:
             acertos, erros = self.comando()
             if erros:
                 return None, erros
@@ -30,20 +30,23 @@ class RecDescendente:
         return self.txt, None
 
     def comando(self):
-        if self.currentTok().type == Consts.KEY:
-            if self.currentTok().value == Consts.LET:
+        if self.currentToken().type == Consts.KEY:
+            if self.currentToken().value == Consts.LET:
                 return self.let_comando()
-        elif self.currentTok().type == Consts.INT:
+        elif self.currentToken().type == Consts.INT:
             return self.E()
-        return None, f"Erro de sintaxe em comando: token inesperado '{self.currentTok().value}'"
+        elif self.currentToken().type == Consts.FLOAT:
+            return self.E()
+        
+        return None, f"Erro de sintaxe em comando: token inesperado '{self.currentToken().value}'"
 
     def let_comando(self):    
         regra = "let_comando -> "
         self.nextToken()
-        if self.currentTok().type == Consts.ID:
+        if self.currentToken().type == Consts.ID:
             regra += "ID "
             self.nextToken()
-            if self.currentTok().type == Consts.EQ:
+            if self.currentToken().type == Consts.EQ:
                 regra += "= expr"
                 self.nextToken()
                 acertos, erros = self.E()    
@@ -52,7 +55,7 @@ class RecDescendente:
         return None, "Erro em let_comando: esperado 'ID = expressão'"
 
     def E(self):
-        if self.currentTok().type == Consts.INT:
+        if self.currentToken().type == Consts.INT or self.currentToken().type == Consts.FLOAT:
             self.txt += "i"
             self.nextToken()
             acertos, erros = self.K()
@@ -60,10 +63,10 @@ class RecDescendente:
         return None, "falha E(), precisa iniciar com inteiro"
     
     def K(self):
-        if self.currentTok().type == Consts.PLUS:
+        if self.currentToken().type == Consts.PLUS:
             self.nextToken()
             
-            if self.currentTok().type == Consts.INT:
+            if self.currentToken().type == Consts.INT or self.currentToken().type == Consts.FLOAT:
                 self.nextToken()
                 self.txt += "+i"
                 acertos, erros = self.K()
@@ -72,10 +75,10 @@ class RecDescendente:
             else:
                 return self.txt, "caractere após + não é numérico"
             
-        if self.currentTok().type == Consts.MINUS:
+        if self.currentToken().type == Consts.MINUS:
             self.nextToken()
             
-            if self.currentTok().type == Consts.INT or self.currentTok().type == Consts.FLOAT:
+            if self.currentToken().type == Consts.INT or self.currentToken().type == Consts.FLOAT:
                 self.nextToken()
                 self.txt += "-i"
                 acertos, erros = self.K()
@@ -84,10 +87,10 @@ class RecDescendente:
             else:
                 return self.txt, "caractere após - não é numérico"
             
-        if self.currentTok().type == Consts.DIV:
+        if self.currentToken().type == Consts.DIV:
             self.nextToken()
             
-            if self.currentTok().type == Consts.INT or self.currentTok().type == Consts.FLOAT:
+            if self.currentToken().type == Consts.INT or self.currentToken().type == Consts.FLOAT:
                 self.nextToken()
                 self.txt += "/i"
                 acertos, erros = self.K()
@@ -96,10 +99,10 @@ class RecDescendente:
             else:
                 return self.txt, "caractere após / não é numérico"
             
-        if self.currentTok().type == Consts.MUL:
+        if self.currentToken().type == Consts.MUL:
             self.nextToken()
             
-            if self.currentTok().type == Consts.INT or self.currentTok().type == Consts.FLOAT:
+            if self.currentToken().type == Consts.INT or self.currentToken().type == Consts.FLOAT:
                 self.nextToken()
                 self.txt += "*i"
                 acertos, erros = self.K()
@@ -108,10 +111,10 @@ class RecDescendente:
             else:
                 return self.txt, "caractere após * não é numérico"
             
-        if self.currentTok().type == Consts.POW:
+        if self.currentToken().type == Consts.POW:
             self.nextToken()
             
-            if self.currentTok().type == Consts.INT or self.currentTok().type == Consts.FLOAT:
+            if self.currentToken().type == Consts.INT or self.currentToken().type == Consts.FLOAT:
                 self.nextToken()
                 self.txt += "^i"
                 acertos, erros = self.K()
@@ -123,5 +126,5 @@ class RecDescendente:
         self.txt += "e"
         return self.txt, None
 
-    def currentTok(self):
+    def currentToken(self):
         return self.current
