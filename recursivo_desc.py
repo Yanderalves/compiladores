@@ -10,7 +10,7 @@ class RecDescendente:
 
     def start(self):
         self.nextToken()
-        acertos, erro = self.comando_list()
+        acertos, erro = self.input_list()
         if self.currentTok().type != Consts.EOF:
             return None, f"Erro: EOF esperado, mas '{self.currentTok().value}' encontrado"
         return acertos, erro
@@ -21,22 +21,18 @@ class RecDescendente:
             self.current = self.tokens[self.id]
         return self.current
 
-    def comando_list(self):
+    def input_list(self):
         if self.currentTok().type in [Consts.KEY, Consts.INT]:
             acertos, erros = self.comando()
             if erros:
                 return None, erros
-            return self.comando_list()
+            return self.input_list()
         return self.txt, None
 
     def comando(self):
         if self.currentTok().type == Consts.KEY:
             if self.currentTok().value == Consts.LET:
                 return self.let_comando()
-            elif self.currentTok().value == Consts.IF:
-                return self.if_comando()
-            elif self.currentTok().value == Consts.WHILE:
-                return self.while_comando()
         elif self.currentTok().type == Consts.INT:
             return self.E()
         return None, f"Erro de sintaxe em comando: token inesperado '{self.currentTok().value}'"
@@ -54,36 +50,6 @@ class RecDescendente:
                 self.txt += f"\n{regra} -> {acertos}"
                 return acertos, erros
         return None, "Erro em let_comando: esperado 'ID = expressão'"
-
-    def if_comando(self):
-        regra = "if_comando -> "
-        self.nextToken()
-        if self.currentTok().type == Consts.LPAR:
-            regra += "( expr ) comando"
-            self.nextToken()
-            acertos, erros = self.E()
-            if erros:
-                return None, erros
-            if self.currentTok().type == Consts.RPAR:
-                self.nextToken()
-                self.txt += f"\n{regra} -> ({acertos}) "
-                return self.comando()
-        return None, "Erro em if_comando: esperado '(condição) comando'"
-
-    def while_comando(self):
-        regra = "while_comando -> "
-        self.nextToken()
-        if self.currentTok().type == Consts.LPAR:
-            regra += "( expr ) comando"
-            self.nextToken()
-            acertos, erros = self.E()
-            if erros:
-                return None, erros
-            if self.currentTok().type == Consts.RPAR:
-                self.nextToken()
-                self.txt += f"\n{regra} -> ({acertos})"
-                return self.comando()
-        return None, "Erro em while_comando: esperado '(condição) comando'"
 
     def E(self):
         if self.currentTok().type == Consts.INT:
@@ -117,6 +83,18 @@ class RecDescendente:
             
             else:
                 return self.txt, "caractere após - não é numérico"
+            
+        if self.currentTok().type == Consts.DIV:
+            self.nextToken()
+            
+            if self.currentTok().type == Consts.INT or self.currentTok().type == Consts.FLOAT:
+                self.nextToken()
+                self.txt += "/i"
+                acertos, erros = self.K()
+                return self.txt, erros
+            
+            else:
+                return self.txt, "caractere após / não é numérico"
             
         self.txt += "e"
         return self.txt, None
