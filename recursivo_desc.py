@@ -108,6 +108,18 @@ class RecDescendente:
             else:
                 return self.txt, "caractere após * não é numérico"
             
+        if self.currentTok().type == Consts.POW:
+            self.nextToken()
+            
+            if self.currentTok().type == Consts.INT or self.currentTok().type == Consts.FLOAT:
+                self.nextToken()
+                self.txt += "^i"
+                acertos, erros = self.K()
+                return self.txt, erros
+            
+            else:
+                return self.txt, "caractere após ^ não é numérico"
+            
         self.txt += "e"
         return self.txt, None
 
