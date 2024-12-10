@@ -1,8 +1,7 @@
 <let_comando> ::= "let" ID "=" <expr>
 <expr> ::= <termo> <K>
 <termo> ::= INT | FLOAT
-<K> ::= (POW | PLUS | MINUS | MUL | DIV ) <termo> <K>
-<K> ::= ε
+<K> ::= (POW | PLUS | MINUS | MUL | DIV) <termo> <K> | ε
 
 
 PLUS é o +
